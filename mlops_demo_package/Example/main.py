@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 def main():
 
-    data = dataset.IrisData(test_size=0.2)
+    data = dataset.IrisData(test_size=0.4)
     trainer = train.TrainRunner(data)
 
     loss_history, acc_history = trainer.train(batch_size=64, epch_num=32)
