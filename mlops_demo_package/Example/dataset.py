@@ -1,9 +1,9 @@
 # from typing import Any
-from sklearn import datasets
-from torch.utils.data import Dataset
-from sklearn.model_selection import train_test_split
-import torch
 import numpy as np
+import torch
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from torch.utils.data import Dataset
 
 
 class IrisData:

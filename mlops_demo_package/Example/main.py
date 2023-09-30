@@ -1,6 +1,6 @@
 import dataset
-import train
 import matplotlib.pyplot as plt
+import train
 
 
 def main():

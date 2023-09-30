@@ -1,9 +1,9 @@
-import model
 import dataset
-import torch
-from torch.utils.data import DataLoader
-from sklearn.metrics import accuracy_score
+import model
 import numpy as np
+import torch
+from sklearn.metrics import accuracy_score
+from torch.utils.data import DataLoader
 
 
 class TrainRunner:
