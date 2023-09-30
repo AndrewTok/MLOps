@@ -1,22 +1,21 @@
 import torch
 
-class LinearBlock(torch.nn.Module):
 
-    def __init__(self, n_input:int, n_out:int):
+class LinearBlock(torch.nn.Module):
+    def __init__(self, n_input: int, n_out: int):
         super().__init__()
 
         self.LinearRelu = torch.nn.Sequential(
             torch.nn.Linear(n_input, n_out),
             torch.nn.BatchNorm1d(n_out),
-            torch.nn.ReLU()
+            torch.nn.ReLU(),
         )
 
     def forward(self, x):
         return self.LinearRelu(x)
 
+
 class SimpleNet(torch.nn.Module):
-
-
     def __init__(self, n_features: int, n_classes: int):
         super().__init__()
 

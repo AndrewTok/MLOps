@@ -3,9 +3,7 @@ import train
 import matplotlib.pyplot as plt
 
 
-
 def main():
-
     data = dataset.IrisData(test_size=0.4)
     trainer = train.TrainRunner(data)
 
@@ -19,6 +17,5 @@ def main():
     pass
 
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     main()
