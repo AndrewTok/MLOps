@@ -4,12 +4,12 @@ class LinearBlock(torch.nn.Module):
 
     def __init__(self, n_input:int, n_out:int):
         super().__init__()
-        
+
         self.LinearRelu = torch.nn.Sequential(
             torch.nn.Linear(n_input, n_out),
             torch.nn.BatchNorm1d(n_out),
             torch.nn.ReLU()
-        ) 
+        )
 
     def forward(self, x):
         return self.LinearRelu(x)
