@@ -19,7 +19,8 @@ class TrainRunner:
 
     def compute_acc(self, y_true: torch.Tensor, pred_probas: torch.Tensor):
         return accuracy_score(
-            y_true.detach().numpy(), np.argmax(pred_probas.detach().numpy(), axis=1)
+            y_true.detach().numpy(),
+            np.argmax(pred_probas.detach().numpy(), axis=1),
         )
 
     def train(self, batch_size: int, epch_num: int):

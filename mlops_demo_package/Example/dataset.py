@@ -19,7 +19,12 @@ class IrisData:
         X = iris.data
         y = iris.target
 
-        self.train_X, self.test_X, self.train_y, self.test_y = train_test_split(
+        (
+            self.train_X,
+            self.test_X,
+            self.train_y,
+            self.test_y,
+        ) = train_test_split(
             X, y, test_size=test_size, random_state=random_state
         )
 
