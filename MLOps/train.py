@@ -1,5 +1,5 @@
 import dataset
-import model
+import models
 import numpy as np
 import torch
 from sklearn.metrics import accuracy_score
@@ -9,13 +9,16 @@ from torch.utils.data import DataLoader
 class TrainRunner:
     data: dataset.IrisData
 
-    def __init__(self, data: dataset.IrisData):
+    def __init__(self, data: dataset.IrisData, model: models.SimpleNet = None):
         self.train_X = torch.from_numpy(data.train_X).to(torch.float)
         self.train_y = torch.from_numpy(data.train_y).to(torch.float)
         self.test_X = torch.from_numpy(data.test_X).to(torch.float)
         self.test_y = torch.from_numpy(data.test_y).to(torch.float)
 
-        self.model = model.SimpleNet(4, 3)
+        if model == None:
+            self.model = models.SimpleNet()
+        else:
+            self.model = model
 
     def compute_acc(self, y_true: torch.Tensor, pred_probas: torch.Tensor):
         return accuracy_score(
@@ -50,6 +53,20 @@ class TrainRunner:
 
         return loss_history, acc_history
 
+
+    def save_model(self, filename):
+        torch.save(self.model.state_dict(), filename)
+
     def test_current_model(self):
         pred_probas = self.model(self.test_X)
-        return self.compute_acc(self.test_y, pred_probas)
+        return self.compute_acc(self.test_y, pred_probas), np.argmax(pred_probas.detach().numpy(), axis=1)
+
+
+if __name__ == '__main__':
+    data = dataset.IrisData.build(test_size=0.4)
+    trainer = TrainRunner(data)
+
+    data.save_to_file('dataset')
+
+    loss_history, acc_history = trainer.train(batch_size=64, epch_num=32)
+    trainer.save_model('trained_model_params')

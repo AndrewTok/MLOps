@@ -16,7 +16,7 @@ class LinearBlock(torch.nn.Module):
 
 
 class SimpleNet(torch.nn.Module):
-    def __init__(self, n_features: int, n_classes: int):
+    def __init__(self, n_features: int = 4, n_classes: int = 3):
         super().__init__()
 
         hidden_1 = 64
