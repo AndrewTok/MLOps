@@ -15,7 +15,7 @@ class TrainRunner:
         self.test_X = torch.from_numpy(data.test_X).to(torch.float)
         self.test_y = torch.from_numpy(data.test_y).to(torch.float)
 
-        if model == None:
+        if model is None:
             self.model = models.SimpleNet()
         else:
             self.model = model
@@ -53,13 +53,14 @@ class TrainRunner:
 
         return loss_history, acc_history
 
-
     def save_model(self, filename):
         torch.save(self.model.state_dict(), filename)
 
     def test_current_model(self):
         pred_probas = self.model(self.test_X)
-        return self.compute_acc(self.test_y, pred_probas), np.argmax(pred_probas.detach().numpy(), axis=1)
+        return self.compute_acc(self.test_y, pred_probas), np.argmax(
+            pred_probas.detach().numpy(), axis=1
+        )
 
 
 if __name__ == '__main__':

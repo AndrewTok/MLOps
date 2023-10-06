@@ -12,13 +12,19 @@ class IrisData:
     test_X: np.ndarray = None
     test_y: np.ndarray = None
 
-    def __init__(self, train_X: np.ndarray, train_y: np.ndarray, test_X:np.ndarray, test_y:np.ndarray):
+    def __init__(
+        self,
+        train_X: np.ndarray,
+        train_y: np.ndarray,
+        test_X: np.ndarray,
+        test_y: np.ndarray,
+    ):
         self.train_X = train_X
         self.train_y = train_y
         self.test_X = test_X
         self.test_y = test_y
 
-    def build(test_size = 0.2, random_state = 8765):
+    def build(test_size=0.2, random_state=8765):
         iris = datasets.load_iris()
 
         X = iris.data
@@ -36,13 +42,19 @@ class IrisData:
         return IrisData(train_X, train_y, test_X, test_y)
 
     def save_to_file(self, filename: str):
-        # total_dataset = np.stack(self.train_X, self.train_y, self.test_X, self.test_y])
-        np.savez(filename, self.train_X, self.train_y, self.test_X, self.test_y)
+        np.savez(
+            filename, self.train_X, self.train_y, self.test_X, self.test_y
+        )
 
     def load_from_file(filename: str):
         npz_file = np.load(filename + '.npz')
         files = npz_file.files
-        train_X, train_y, test_X, test_y = npz_file[files[0]], npz_file[files[1]], npz_file[files[2]], npz_file[files[3]]
+        train_X, train_y, test_X, test_y = (
+            npz_file[files[0]],
+            npz_file[files[1]],
+            npz_file[files[2]],
+            npz_file[files[3]],
+        )
         return IrisData(train_X, train_y, test_X, test_y)
 
 
