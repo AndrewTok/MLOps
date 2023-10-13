@@ -1,4 +1,4 @@
-from .dataset import IrisData, Dataset
+from .dataset import IrisData, IrisDataset
 from .models import SimpleNet
 import numpy as np
 import torch
@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 
 
 class TrainRunner:
-    data: dataset.IrisData
+    data: IrisData
 
     def __init__(self, data: IrisData, model: SimpleNet = None):
         self.train_X = torch.from_numpy(data.train_X).to(torch.float)
