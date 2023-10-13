@@ -1,9 +1,10 @@
-from .dataset import IrisData, IrisDataset
-from .models import SimpleNet
 import numpy as np
 import torch
 from sklearn.metrics import accuracy_score
 from torch.utils.data import DataLoader
+
+from .dataset import IrisData, IrisDataset
+from .models import SimpleNet
 
 
 class TrainRunner:
@@ -32,7 +33,7 @@ class TrainRunner:
         loss_func = torch.nn.CrossEntropyLoss()
         optimizer = torch.optim.SGD(
             self.model.parameters(), lr=5e-2, weight_decay=1e-1
-        ) 
+        )
         self.model.train()
         loss_history = []
         acc_history = []
@@ -62,6 +63,7 @@ class TrainRunner:
             pred_probas.detach().numpy(), axis=1
         )
 
+
 def train():
     data = IrisData.build(test_size=0.4)
     trainer = TrainRunner(data)
@@ -70,6 +72,7 @@ def train():
 
     loss_history, acc_history = trainer.train(batch_size=64, epch_num=32)
     trainer.save_model('trained_model_params.pt')
+
 
 if __name__ == '__main__':
     train()

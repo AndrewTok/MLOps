@@ -1,7 +1,8 @@
-from .dataset import IrisData
-from .models import SimpleNet
 import pandas as pd
 import torch
+
+from .dataset import IrisData
+from .models import SimpleNet
 from .train import TrainRunner
 
 
