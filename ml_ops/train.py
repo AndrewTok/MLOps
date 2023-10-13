@@ -1,5 +1,5 @@
-import dataset
-import models
+from .dataset import IrisData, Dataset
+from .models import SimpleNet
 import numpy as np
 import torch
 from sklearn.metrics import accuracy_score
@@ -9,14 +9,14 @@ from torch.utils.data import DataLoader
 class TrainRunner:
     data: dataset.IrisData
 
-    def __init__(self, data: dataset.IrisData, model: models.SimpleNet = None):
+    def __init__(self, data: IrisData, model: SimpleNet = None):
         self.train_X = torch.from_numpy(data.train_X).to(torch.float)
         self.train_y = torch.from_numpy(data.train_y).to(torch.float)
         self.test_X = torch.from_numpy(data.test_X).to(torch.float)
         self.test_y = torch.from_numpy(data.test_y).to(torch.float)
 
         if model is None:
-            self.model = models.SimpleNet()
+            self.model = SimpleNet()
         else:
             self.model = model
 
@@ -27,12 +27,12 @@ class TrainRunner:
         )
 
     def train(self, batch_size: int, epch_num: int):
-        train_dataset = dataset.IrisDataset(self.train_X, self.train_y)
+        train_dataset = IrisDataset(self.train_X, self.train_y)
         train_dataloader = DataLoader(train_dataset, batch_size)
-        loss_func = torch.nn.CrossEntropyLoss()  # .type(torch.FloatTensor)
+        loss_func = torch.nn.CrossEntropyLoss()
         optimizer = torch.optim.SGD(
             self.model.parameters(), lr=5e-2, weight_decay=1e-1
-        )  #
+        ) 
         self.model.train()
         loss_history = []
         acc_history = []
@@ -62,12 +62,14 @@ class TrainRunner:
             pred_probas.detach().numpy(), axis=1
         )
 
-
-if __name__ == '__main__':
-    data = dataset.IrisData.build(test_size=0.4)
+def train():
+    data = IrisData.build(test_size=0.4)
     trainer = TrainRunner(data)
 
     data.save_to_file('dataset')
 
     loss_history, acc_history = trainer.train(batch_size=64, epch_num=32)
-    trainer.save_model('trained_model_params')
+    trainer.save_model('trained_model_params.pt')
+
+if __name__ == '__main__':
+    train()
