@@ -9,7 +9,7 @@ def train():
 
 
 def infer():
-    m_infer.infer('trained_model_params.pt', 'dataset')
+    m_infer.infer()
 
 
 if __name__ == '__main__':

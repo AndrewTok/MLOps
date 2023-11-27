@@ -47,7 +47,7 @@ class IrisData:
         )
 
     def load_from_file(filename: str):
-        npz_file = np.load(filename + '.npz')
+        npz_file = np.load(filename)
         files = npz_file.files
         train_X, train_y, test_X, test_y = (
             npz_file[files[0]],

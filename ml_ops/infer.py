@@ -15,7 +15,7 @@ def test_current_model(model, test_X, test_y):
     )
 
 
-def infer(model_file: str, data_file: str):
+def infer(model_file: str = 'trained_model_params.pt', data_file: str = 'data/dataset.npz'):
     data = IrisData.load_from_file(data_file)
     net = SimpleNet()
     net.load_state_dict(torch.load(model_file))
@@ -34,4 +34,4 @@ def infer(model_file: str, data_file: str):
 
 
 if __name__ == '__main__':
-    infer('trained_model_params.pt', 'dataset')
+    infer('trained_model_params.pt', 'data/dataset.npz')

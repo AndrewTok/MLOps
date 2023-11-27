@@ -116,8 +116,10 @@ class IrisModule(pl.LightningModule):
 
 
 def train():
-    data = IrisData.build(test_size=0.4)
-    data.save_to_file('dataset')
+    # data = IrisData.build(test_size=0.4)
+    # data.save_to_file('dataset')
+
+    data = IrisData.load_from_file('data/dataset.npz')
 
     data_module = IrisDataModule(data, batch_size=64)
     train_module = IrisModule()
