@@ -9,6 +9,8 @@ from .models import SimpleNet
 
 from dvc import api as DVC
 
+import os
+
 # from torch.utils.data import DataLoader
 
 
@@ -116,10 +118,25 @@ class IrisModule(pl.LightningModule):
 #         )
 
 
-def load_data(url: str = 'https://github.com/AndrewTok/ml-ops'):
+def load_data(url: str = './'): #'https://github.com/AndrewTok/ml-ops'
     fs = DVC.DVCFileSystem(url, rev='main')
-    fs.get('data', 'data', recursive=True)
+
+    # print(fs.find("/", detail=False, dvc_only=True))
     
+    # def get_filename(path: str):
+    #     idx = path.rfind('/')
+    #     return path[idx+1:]
+
+    tracked_lst = fs.find("/", detail=False, dvc_only=True)
+    for tracked in tracked_lst:       
+        path = tracked[1:]
+        if os.path.exists(path):
+            continue
+        fs.get_file(path, path)
+
+    # fs.get('data', 'data', recursive=True)
+
+    pass
 
 def train():
     # data = IrisData.build(test_size=0.4)
