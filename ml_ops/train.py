@@ -7,6 +7,7 @@ from .data_module import IrisDataModule
 from .dataset import IrisData  # , IrisDataset
 from .models import SimpleNet
 
+from dvc import api as DVC
 
 # from torch.utils.data import DataLoader
 
@@ -115,9 +116,16 @@ class IrisModule(pl.LightningModule):
 #         )
 
 
+def load_data(url: str = 'https://github.com/AndrewTok/ml-ops'):
+    fs = DVC.DVCFileSystem(url, rev='main')
+    fs.get('data', 'data', recursive=True)
+    
+
 def train():
     # data = IrisData.build(test_size=0.4)
     # data.save_to_file('dataset')
+
+    load_data()
 
     data = IrisData.load_from_file('data/dataset.npz')
 
