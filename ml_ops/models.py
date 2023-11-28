@@ -16,11 +16,11 @@ class LinearBlock(torch.nn.Module):
 
 
 class SimpleNet(torch.nn.Module):
-    def __init__(self, n_features: int = 4, n_classes: int = 3):
+    def __init__(self, n_features: int = 4, n_classes: int = 3, hidden_1 = 64, hidden_2 = 32):
         super().__init__()
 
-        hidden_1 = 64
-        hidden_2 = 32
+        # hidden_1 = 64
+        # hidden_2 = 32
 
         self.model = torch.nn.Sequential(
             LinearBlock(n_features, hidden_1),

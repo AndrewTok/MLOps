@@ -1,0 +1,15 @@
+data:
+    name: name
+    path: data/dataset.npz
+
+model:
+    name: SimpleNet
+    save_dir: /
+    hidden_1_size: 64
+    hidden_2_size: 32
+
+training:
+    batch_size: 32
+    epochs: 32
+    learning_rate: 5e-2
+    weight_decay: 1e-1

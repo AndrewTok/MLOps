@@ -7,6 +7,8 @@ from .dataset import IrisData
 from .models import SimpleNet
 from .train import IrisModule  # TrainRunner
 
+from .config import Params
+
 
 def test_current_model(model, test_X, test_y):
     pred_probas = model(test_X)
@@ -15,10 +17,10 @@ def test_current_model(model, test_X, test_y):
     )
 
 
-def infer(model_file: str = 'trained_model_params.pt', data_file: str = 'data/dataset.npz'):
-    data = IrisData.load_from_file(data_file)
-    net = SimpleNet()
-    net.load_state_dict(torch.load(model_file))
+def infer(cfg: Params): #model_file: str = 'trained_model_params.pt', data_file: str = 'data/dataset.npz'
+    data = IrisData.load_from_file(cfg.data.path) #data_file
+    net = SimpleNet(hidden_1=cfg.model.hidden_1_size, hidden_2=cfg.model.hidden_2_size)
+    net.load_state_dict(torch.load(Params.get_model_save_path(cfg.model))) #model_file
 
     data_module = IrisDataModule(data)
 
@@ -31,7 +33,6 @@ def infer(model_file: str = 'trained_model_params.pt', data_file: str = 'data/da
     df.to_csv('predictions.csv')
 
     print('accuracy: ' + str(accuracy))
-
 
 if __name__ == '__main__':
     infer('trained_model_params.pt', 'data/dataset.npz')
