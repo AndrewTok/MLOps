@@ -16,5 +16,8 @@ def check_cfg():
     config.check_cfg()
     pass
 
+def run_mlflow_tracking_server():
+    m_train.start_mlflow_server()
+
 if __name__ == '__main__':
     fire.Fire()

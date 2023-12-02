@@ -31,10 +31,30 @@ class Training:
 
 
 @dataclass
+class Checkpoint:
+    use: bool
+    dirpath: str
+    filename: str
+    monitor: str
+    save_top_k: int
+    every_n_train_steps: int
+    every_n_epochs: int
+
+
+@dataclass
+class Artifacts:
+    experiment_name: str
+    log_uri: str
+    checkpoint: Checkpoint
+    mlflow_server_address: str
+
+
+@dataclass
 class Params:
     data: Data
     model: Model
     training: Training
+    artifacts: Artifacts
 
     @staticmethod
     def get_model_save_path(model: Model):

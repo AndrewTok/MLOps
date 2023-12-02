@@ -10,13 +10,17 @@ from .models import SimpleNet
 from .config import Params, load_cfg
 from dvc import api as DVC
 
+import git
+
+from mlflow.server import get_app_client
+
 import os
 
 # from torch.utils.data import DataLoader
 
 
 class IrisModule(pl.LightningModule):
-    def __init__(self, cfg: Params = None):
+    def __init__(self, cfg: Params, git_commit_id: str):
         super().__init__()
         self.save_hyperparameters()
         
@@ -27,6 +31,7 @@ class IrisModule(pl.LightningModule):
         self.loss_f = torch.nn.CrossEntropyLoss()
         self.lr = cfg.training.learning_rate #5e-2
         self.weight_decay = cfg.training.weight_decay
+
 
     def training_step(self, batch, batch_idx):
         x, y_gt = batch
@@ -71,19 +76,31 @@ def load_data(url: str = './'): #'https://github.com/AndrewTok/ml-ops'
             continue
         fs.get_file(path, path)
 
-def train(cfg: Params = None):
+def train():
 
     load_data()
 
     cfg = load_cfg()
 
+    repo = git.Repo(search_parent_directories=True)
+
     data = IrisData.load_from_file('data/dataset.npz')
 
     data_module = IrisDataModule(data, batch_size=cfg.training.batch_size)
-    train_module = IrisModule(cfg)
+    train_module = IrisModule(cfg, git_commit_id=repo.head.object.hexsha)
 
+
+    _logger = pl.loggers.MLFlowLogger(
+            experiment_name = cfg.artifacts.experiment_name,
+            tracking_uri = cfg.artifacts.log_uri, #"file:./logs/mlflow_runs",
+            # save_dir = "./logs/mlruns"
+    )
     trainer = pl.Trainer(
-        accelerator='cpu', devices=1, max_epochs=cfg.training.epochs, log_every_n_steps=10
+        accelerator='cpu',
+        devices=1,
+        max_epochs=cfg.training.epochs, 
+        logger=_logger,
+        log_every_n_steps=cfg.artifacts.checkpoint.every_n_train_steps,
     )
 
     train_loader = data_module.train_dataloader()
@@ -93,6 +110,22 @@ def train(cfg: Params = None):
     # loss_history, acc_history = trainer.train(batch_size=64, epch_num=32)
     train_module.save_model(Params.get_model_save_path(cfg.model))
 
+
+def start_mlflow_server():
+    import mlflow.cli
+    import webbrowser
+
+    cfg: Params = load_cfg()
+
+    
+
+    webbrowser.open(cfg.artifacts.mlflow_server_address, new=2)
+
+    mlflow.cli.server(['--backend-store-uri', '.\\logs\\mlflow_runs\\'])
+    # app = get_app_client("AppName", '--backend-store-uri', '.\\logs\\mlflow_runs\\')
+
+
+    pass
 
 if __name__ == '__main__':
     train()
