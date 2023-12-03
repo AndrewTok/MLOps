@@ -110,6 +110,7 @@ def load_data(
         path = tracked[1:]
         if os.path.exists(path):
             continue
+        os.makedirs(os.path.dirname(path), exist_ok=True)
         fs.get_file(path, path)
 
 
