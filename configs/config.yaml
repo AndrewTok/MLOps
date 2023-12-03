@@ -4,7 +4,7 @@ data:
 
 model:
     name: SimpleNet
-    save_dir: /
+    save_dir: ./
     hidden_1_size: 64
     hidden_2_size: 32
 
@@ -18,6 +18,7 @@ artifacts:
     experiment_name: example-experiment
     log_uri: "file:./logs/mlflow_runs"
     mlflow_server_address: "http://127.0.0.1:5000"
+    # mlflow_models_uri: "file:./logs/mlflow_runs/models/"
     checkpoint:
         use: false
         dirpath: checkpoints
@@ -26,3 +27,7 @@ artifacts:
         save_top_k: 3
         every_n_train_steps: 20
         every_n_epochs: 1
+
+onnx:
+    feature_name: "IRIS_FEATURES"
+    pred_name: "CLASS_PROBS"

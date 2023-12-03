@@ -19,15 +19,27 @@ class IrisDataModule(pl.LightningDataModule):
         self.test_X = torch.from_numpy(data.test_X).to(torch.float)
         self.test_y = torch.from_numpy(data.test_y).to(torch.float)
 
-        self.train_set = IrisDataset(self.train_X, self.train_y)
-        self.test_set = IrisDataset(self.test_X, self.test_y)
-
-    def train_dataloader(self):
-        return torch.utils.data.DataLoader(
-            self.train_set, batch_size=self.batch_size, drop_last=True
+        self.train_set = IrisDataset(
+            self.train_X,
+            self.train_y,
+        )
+        self.test_set = IrisDataset(
+            self.test_X,
+            self.test_y,
         )
 
-    def test_dataloader(self):
+    def train_dataloader(
+        self,
+    ):
+        return torch.utils.data.DataLoader(
+            self.train_set,
+            batch_size=self.batch_size,
+            drop_last=True,
+        )
+
+    def test_dataloader(
+        self,
+    ):
         return torch.utils.data.DataLoader(
             self.test_set,
             batch_size=1,
