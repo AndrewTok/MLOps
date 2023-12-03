@@ -29,6 +29,7 @@ def get_test_info(pred_probas, test_y):
 def infer_onnx(cfg: Params):
     cfg = make_params(cfg)
 
+    # mlflow.set_experiment_tag("TestKey", "testValue")
     mlflow.set_tracking_uri(cfg.artifacts.log_uri)
     mlflow.set_experiment(experiment_name=cfg.artifacts.experiment_name)
 

@@ -1,10 +1,10 @@
 data:
     name: name
-    path: data/dataset.npz
+    path: "data\\dataset.npz"
 
 model:
     name: SimpleNet
-    save_dir: "./models"
+    save_dir: ".\\models"
     hidden_1_size: 64
     hidden_2_size: 32
 
@@ -16,7 +16,7 @@ training:
 
 artifacts:
     experiment_name: example-experiment
-    log_uri: "file:./logs/mlflow_runs"
+    log_uri: "file:.\\logs\\mlflow_runs"
     mlflow_server_address: "http://127.0.0.1:5000"
     # mlflow_models_uri: "file:./logs/mlflow_runs/models/"
     checkpoint:
@@ -34,4 +34,4 @@ onnx:
 
 serving:
     onnx_model_path: "auto" # Path to .onnx model. Use "auto" to automatically get trained model (after "python ./commands train" command) path.
-    predictions_save_path: "./data/predictions.csv"
+    predictions_save_path: ".\\data\\predictions.csv"
