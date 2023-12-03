@@ -97,7 +97,7 @@ class IrisModule(pl.LightningModule):
 
 
 def load_data(
-    url: str = './',
+    url: str = 'https://github.com/AndrewTok/ml-ops',  # './'
 ):
     # 'https://github.com/AndrewTok/ml-ops'
     fs = DVC.DVCFileSystem(
@@ -118,8 +118,6 @@ def train():
 
     cfg = load_cfg()
 
-    repo = git.Repo(search_parent_directories=True)
-
     data = IrisData.load_from_file('data/dataset.npz')
 
     data_module = IrisDataModule(
@@ -136,7 +134,12 @@ def train():
         # save_dir = "./logs/mlruns"
     )
 
-    _logger.log_hyperparams({"git_commit_id": repo.head.object.hexsha})
+    try:
+        repo = git.Repo(search_parent_directories=True)
+        _logger.log_hyperparams({"git_commit_id": repo.head.object.hexsha})
+    except git.InvalidGitRepositoryError:
+        print("unable to log a git commit id, not a git repository")
+
     trainer = pl.Trainer(
         accelerator='cpu',
         devices=1,

@@ -165,5 +165,5 @@ cython_debug/
 *.npz
 *lightning_logs/
 .idea/
-*logs/
+*logs/mlflow_runs
 *.onnx
