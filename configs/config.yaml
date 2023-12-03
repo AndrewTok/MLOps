@@ -15,7 +15,7 @@ training:
     weight_decay: 1e-1
 
 artifacts:
-    experiment_name: example-experiment
+    experiment_name: iris-simple-model
     log_uri: "file:./logs/mlflow_runs"
     mlflow_server_address: "http://127.0.0.1:5000"
     # mlflow_models_uri: "file:./logs/mlflow_runs/models/"
