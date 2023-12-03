@@ -89,6 +89,7 @@ class IrisModule(pl.LightningModule):
         return optimizer
 
     def save_model(self, filename):
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
         torch.save(
             self.model.state_dict(),
             filename,

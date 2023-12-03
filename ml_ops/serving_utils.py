@@ -1,14 +1,11 @@
+import mlflow.onnx
+import onnx
 import torch
-
-
-
+from mlflow.models import infer_signature
 
 from .config import Params, load_cfg
 from .models import SimpleNet
-import onnx
 
-import mlflow.onnx
-from mlflow.models import infer_signature
 
 def start_mlflow_server():
     import webbrowser
@@ -22,7 +19,8 @@ def start_mlflow_server():
         [
             '--backend-store-uri',
             '.\\logs\\mlflow_runs\\',
-        ])
+        ]
+    )
 
     pass
 
@@ -41,12 +39,12 @@ def export_to_onnx(model: SimpleNet, cfg: Params):
         output_names=[cfg.onnx.pred_name],
         dynamic_axes={
             cfg.onnx.feature_name: {0: "BATCH_SIZE"},
-            cfg.onnx.pred_name: {0: "BATCH_SIZE"}})
-
+            cfg.onnx.pred_name: {0: "BATCH_SIZE"},
+        },
+    )
 
 
 def save_mlflow_model(cfg: Params):
-
     dummy_input = SimpleNet.get_dummy_input()
 
     onnx_model = onnx.load_model(cfg.get_serving_onnx_path())

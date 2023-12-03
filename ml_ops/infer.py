@@ -21,7 +21,7 @@ def test_current_model(model, test_X, test_y):
 
 
 def get_test_info(pred_probas, test_y):
-    a_maxes = (np.argmax(pred_probas, axis=1),)
+    a_maxes = np.argmax(pred_probas, axis=1)
     accuracy = accuracy_score(test_y, a_maxes)
     return accuracy, a_maxes
 
