@@ -13,16 +13,14 @@ from .config import Params, load_cfg
 from .data_module import IrisDataModule
 from .dataset import IrisData  # , IrisDataset
 from .models import SimpleNet
+from .serving_utils import export_to_onnx
+
 
 # from torch.utils.data import DataLoader
 
 
 class IrisModule(pl.LightningModule):
-    def __init__(
-        self,
-        cfg: Params,
-        git_commit_id: str,
-    ):
+    def __init__(self, cfg: Params):
         super().__init__()
         self.save_hyperparameters()
 
@@ -42,10 +40,7 @@ class IrisModule(pl.LightningModule):
         batch,
         batch_idx,
     ):
-        (
-            x,
-            y_gt,
-        ) = batch
+        x, y_gt = batch
         y_pr = self.model(x)
 
         loss = self.loss_f(
@@ -61,7 +56,7 @@ class IrisModule(pl.LightningModule):
         metrics = {
             'loss': loss.detach(),
             'accuracy': acc,
-            'mistakes': (1 - acc)*y_gt.shape[0]
+            'mistakes': (1 - acc) * y_gt.shape[0],
         }
         self.log_dict(
             metrics,
@@ -75,10 +70,7 @@ class IrisModule(pl.LightningModule):
         return loss
 
     @staticmethod
-    def compute_acc(
-        y_true: torch.Tensor,
-        pred_probas: torch.Tensor,
-    ):
+    def compute_acc(y_true: torch.Tensor, pred_probas: torch.Tensor):
         return accuracy_score(
             y_true.detach().numpy(),
             np.argmax(
@@ -87,9 +79,7 @@ class IrisModule(pl.LightningModule):
             ),
         )
 
-    def configure_optimizers(
-        self,
-    ):
+    def configure_optimizers(self):
         """Define optimizers and LR schedulers."""
         optimizer = torch.optim.SGD(
             self.model.parameters(),
@@ -98,36 +88,28 @@ class IrisModule(pl.LightningModule):
         )  # ,
         return optimizer
 
-    def save_model(
-        self,
-        filename,
-    ):
+    def save_model(self, filename):
         torch.save(
             self.model.state_dict(),
             filename,
         )
 
 
-def load_data(url: str = './',):
+def load_data(
+    url: str = './',
+):
     # 'https://github.com/AndrewTok/ml-ops'
     fs = DVC.DVCFileSystem(
         url,
         rev='main',
     )
 
-    tracked_lst = fs.find(
-        "/",
-        detail=False,
-        dvc_only=True,
-    )
+    tracked_lst = fs.find("/", detail=False, dvc_only=True)
     for tracked in tracked_lst:
         path = tracked[1:]
         if os.path.exists(path):
             continue
-        fs.get_file(
-            path,
-            path,
-        )
+        fs.get_file(path, path)
 
 
 def train():
@@ -145,7 +127,6 @@ def train():
     )
     train_module = IrisModule(
         cfg,
-        git_commit_id=repo.head.object.hexsha,
     )
 
     _logger = pl.loggers.MLFlowLogger(
@@ -154,6 +135,7 @@ def train():
         # save_dir = "./logs/mlruns"
     )
 
+    _logger.log_hyperparams({"git_commit_id": repo.head.object.hexsha})
     trainer = pl.Trainer(
         accelerator='cpu',
         devices=1,
@@ -175,53 +157,6 @@ def train():
     export_to_onnx(
         model=train_module.model,
         cfg=cfg,
-    )
-    
-
-
-def start_mlflow_server():
-    import webbrowser
-
-    import mlflow.cli
-
-    cfg: Params = load_cfg()
-    webbrowser.open(
-        cfg.artifacts.mlflow_server_address,
-        new=2,
-    )
-
-    mlflow.cli.server(
-        [
-            '--backend-store-uri',
-            '.\\logs\\mlflow_runs\\',
-        ])
-
-    pass
-
-
-def export_to_onnx(
-    model: SimpleNet,
-    cfg: Params,
-):
-    # import onnxruntime as ort
-
-    model.eval()
-
-    dummy_input = torch.randn(1, 4)
-
-    torch.onnx.export(
-        model,
-        dummy_input,
-        Params.get_save_model_onnx_path(cfg.model),
-        export_params=True,
-        opset_version=15,
-        do_constant_folding=True,
-        input_names=[cfg.onnx.feature_name],
-        output_names=[cfg.onnx.pred_name],
-        dynamic_axes={
-            cfg.onnx.feature_name: {0: "BATCH_SIZE"},
-            cfg.onnx.pred_name: {0: "BATCH_SIZE"},
-        },
     )
 
 

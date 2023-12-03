@@ -2,6 +2,7 @@ import fire
 
 from ml_ops import config
 from ml_ops import infer as m_infer
+from ml_ops import serving_utils
 from ml_ops import train as m_train
 
 
@@ -15,7 +16,7 @@ def infer():
 
 
 def run_mlflow_tracking_server():
-    m_train.start_mlflow_server()
+    serving_utils.start_mlflow_server()
 
 
 def run_server():

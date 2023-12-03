@@ -28,18 +28,14 @@ class IrisDataModule(pl.LightningDataModule):
             self.test_y,
         )
 
-    def train_dataloader(
-        self,
-    ):
+    def train_dataloader(self):
         return torch.utils.data.DataLoader(
             self.train_set,
             batch_size=self.batch_size,
             drop_last=True,
         )
 
-    def test_dataloader(
-        self,
-    ):
+    def test_dataloader(self):
         return torch.utils.data.DataLoader(
             self.test_set,
             batch_size=1,

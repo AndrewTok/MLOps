@@ -24,21 +24,13 @@ class IrisData:
         self.test_X = test_X
         self.test_y = test_y
 
-    def build(
-        test_size=0.2,
-        random_state=8765,
-    ):
+    def build(test_size=0.2, random_state=8765):
         iris = datasets.load_iris()
 
         X = iris.data
         y = iris.target
 
-        (
-            train_X,
-            test_X,
-            train_y,
-            test_y,
-        ) = train_test_split(
+        train_X, test_X, train_y, test_y = train_test_split(
             X,
             y,
             test_size=test_size,
@@ -52,10 +44,7 @@ class IrisData:
             test_y,
         )
 
-    def save_to_file(
-        self,
-        filename: str,
-    ):
+    def save_to_file(self, filename: str):
         np.savez(
             filename,
             self.train_X,
@@ -64,22 +53,16 @@ class IrisData:
             self.test_y,
         )
 
-    def load_from_file(
-        filename: str,
-    ):
+    def load_from_file(filename: str):
         npz_file = np.load(filename)
         files = npz_file.files
-        (
-            train_X,
-            train_y,
-            test_X,
-            test_y,
-        ) = (
+        train_X, train_y, test_X, test_y = (
             npz_file[files[0]],
             npz_file[files[1]],
             npz_file[files[2]],
             npz_file[files[3]],
         )
+
         return IrisData(
             train_X,
             train_y,
@@ -94,24 +77,12 @@ class IrisDataset(Dataset):
     X -> tensor [N_elements, 4]
     """
 
-    def __init__(
-        self,
-        X: torch.Tensor,
-        y: torch.Tensor,
-    ):
+    def __init__(self, X: torch.Tensor, y: torch.Tensor):
         self.X = X
         self.y = y
 
-    def __len__(
-        self,
-    ):
+    def __len__(self):
         return self.X.size()[0]
 
-    def __getitem__(
-        self,
-        index: int,
-    ):
-        return (
-            self.X[index],
-            self.y[index],
-        )
+    def __getitem__(self, index: int):
+        return self.X[index], self.y[index]

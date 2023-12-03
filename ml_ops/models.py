@@ -10,18 +10,12 @@ class LinearBlock(torch.nn.Module):
         super().__init__()
 
         self.LinearRelu = torch.nn.Sequential(
-            torch.nn.Linear(
-                n_input,
-                n_out,
-            ),
+            torch.nn.Linear(n_input, n_out),
             torch.nn.BatchNorm1d(n_out),
             torch.nn.ReLU(),
         )
 
-    def forward(
-        self,
-        x,
-    ):
+    def forward(self, x):
         return self.LinearRelu(x)
 
 
@@ -34,9 +28,6 @@ class SimpleNet(torch.nn.Module):
         hidden_2=32,
     ):
         super().__init__()
-
-        # hidden_1 = 64
-        # hidden_2 = 32
 
         self.model = torch.nn.Sequential(
             LinearBlock(
@@ -55,9 +46,10 @@ class SimpleNet(torch.nn.Module):
 
         self.SM = torch.nn.Softmax(dim=1)
 
-    def forward(
-        self,
-        x,
-    ):
+    def forward(self, x):
         x1 = self.model(x)
         return self.SM(x1)
+
+    @staticmethod
+    def get_dummy_input():
+        return torch.randn(1, 4)
