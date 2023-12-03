@@ -14,7 +14,6 @@ from .data_module import IrisDataModule
 from .dataset import IrisData  # , IrisDataset
 from .models import SimpleNet
 
-
 # from torch.utils.data import DataLoader
 
 
@@ -62,6 +61,7 @@ class IrisModule(pl.LightningModule):
         metrics = {
             'loss': loss.detach(),
             'accuracy': acc,
+            'mistakes': (1 - acc)*y_gt.shape[0]
         }
         self.log_dict(
             metrics,
@@ -108,9 +108,7 @@ class IrisModule(pl.LightningModule):
         )
 
 
-def load_data(
-    url: str = './',
-):
+def load_data(url: str = './',):
     # 'https://github.com/AndrewTok/ml-ops'
     fs = DVC.DVCFileSystem(
         url,
@@ -178,6 +176,7 @@ def train():
         model=train_module.model,
         cfg=cfg,
     )
+    
 
 
 def start_mlflow_server():
@@ -195,8 +194,7 @@ def start_mlflow_server():
         [
             '--backend-store-uri',
             '.\\logs\\mlflow_runs\\',
-        ]
-    )
+        ])
 
     pass
 
@@ -209,15 +207,12 @@ def export_to_onnx(
 
     model.eval()
 
-    dummy_input = torch.randn(
-        1,
-        4,
-    )
+    dummy_input = torch.randn(1, 4)
 
     torch.onnx.export(
         model,
         dummy_input,
-        Params.get_model_onnx_path(cfg.model),
+        Params.get_save_model_onnx_path(cfg.model),
         export_params=True,
         opset_version=15,
         do_constant_folding=True,
@@ -228,15 +223,6 @@ def export_to_onnx(
             cfg.onnx.pred_name: {0: "BATCH_SIZE"},
         },
     )
-
-    # ort_inputs = {
-    #     "IRIS_FEATURES": dummy_input.numpy(),
-    # }
-
-    # ort_session = ort.InferenceSession(Params.get_model_onnx_path(cfg.model))
-    # onnx_embeddings = ort_session.run(None, ort_inputs)[0]
-
-    # ort.
 
 
 if __name__ == '__main__':

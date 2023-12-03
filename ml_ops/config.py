@@ -2,8 +2,9 @@ from dataclasses import dataclass
 
 from hydra import compose, initialize
 from hydra.core.config_store import ConfigStore
-from omegaconf import OmegaConf
+from omegaconf import OmegaConf, DictConfig
 
+import os
 
 @dataclass
 class Data:
@@ -52,6 +53,11 @@ class Onnx:
     feature_name: str
     pred_name: str
 
+@dataclass
+class Serving:
+    onnx_model_path: str
+    predictions_save_path: str
+
 
 @dataclass
 class Params:
@@ -60,18 +66,24 @@ class Params:
     training: Training
     artifacts: Artifacts
     onnx: Onnx
+    serving: Serving
 
     @staticmethod
     def get_model_save_path(
         model: Model,
     ):
-        return model.save_dir + 'trained_' + model.name + '.pt'
+        return  os.path.join(model.save_dir,'trained_' + model.name + '.pt')
 
     @staticmethod
-    def get_model_onnx_path(
+    def get_save_model_onnx_path(
         model: Model,
     ):
-        return model.save_dir + model.name + '.onnx'
+        return os.path.join(model.save_dir, model.name + '.onnx')
+
+    def get_serving_onnx_path(self):
+        if self.serving.onnx_model_path == "auto":
+            return Params.get_save_model_onnx_path(self.model)
+        return self.serving.onnx_model_path
 
 
 cs = ConfigStore.instance()
@@ -96,12 +108,7 @@ def check_cfg():
     # cfg = Params(data, model, train)
 
     print(cfg.model.hidden_1_size)
-    print(
-        OmegaConf.to_yaml(
-            cfg,
-            resolve=True,
-        )
-    )
+    print(OmegaConf.to_yaml(cfg, resolve=True))
 
 
 def load_cfg() -> Params:
@@ -113,3 +120,7 @@ def load_cfg() -> Params:
     cfg: Params = compose("config.yaml")
 
     return cfg
+
+
+def make_params(cfg: DictConfig):
+    return Params(cfg.data, cfg.model, cfg.training, cfg.artifacts, cfg.onnx, cfg.serving)

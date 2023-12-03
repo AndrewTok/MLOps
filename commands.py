@@ -14,11 +14,6 @@ def infer():
     m_infer.infer(cfg)
 
 
-def check_cfg():
-    config.check_cfg()
-    pass
-
-
 def run_mlflow_tracking_server():
     m_train.start_mlflow_server()
 

@@ -59,6 +59,5 @@ class SimpleNet(torch.nn.Module):
         self,
         x,
     ):
-        print(x.shape)
         x1 = self.model(x)
         return self.SM(x1)

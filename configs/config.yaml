@@ -4,7 +4,7 @@ data:
 
 model:
     name: SimpleNet
-    save_dir: ./
+    save_dir: "./models"
     hidden_1_size: 64
     hidden_2_size: 32
 
@@ -29,5 +29,9 @@ artifacts:
         every_n_epochs: 1
 
 onnx:
-    feature_name: "IRIS_FEATURES"
-    pred_name: "CLASS_PROBS"
+    feature_name: "IRIS_FEATURES" # Dict key for input_name when export to onnx 
+    pred_name: "CLASS_PROBS" # Dict key for output_name when export to onnx
+
+serving:
+    onnx_model_path: "auto" # Path to .onnx model. Use "auto" to automatically get trained model (after "python ./commands train" command) path. 
+    predictions_save_path: "./data/predictions.csv"
