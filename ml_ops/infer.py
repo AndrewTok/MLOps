@@ -43,7 +43,7 @@ def infer_onnx(cfg: Params):
         pred_probas = onnx_pyfunc.predict(data.test_X.astype('float32'))[
             cfg.onnx.pred_name
         ]
-
+        print(pred_probas[:5])
         true = data.test_y
 
         accuracy, pred = get_test_info(pred_probas, true)

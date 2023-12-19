@@ -1,5 +1,6 @@
 import mlflow.onnx
 import onnx
+import onnxruntime as ort
 import torch
 from mlflow.models import infer_signature
 
@@ -68,3 +69,9 @@ def save_mlflow_model(cfg: Params):
     )
 
     return model_info
+
+
+def make_outputs_for_triton_testing(onnx_path, inputs):
+    ort_sess = ort.InferenceSession(onnx_path)
+    outputs = ort_sess.run(None, {'IRIS_FEATURES': inputs})
+    return outputs

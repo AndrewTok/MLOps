@@ -1,0 +1,30 @@
+name: "simple_model"
+platform: "onnxruntime_onnx"
+max_batch_size: 128
+
+
+input [
+    {
+        name: "IRIS_FEATURES"
+        data_type: TYPE_FP32
+        dims: [ 4 ]
+    }
+]
+
+output [
+    {
+        name: "CLASS_PROBS"
+        data_type: TYPE_FP32
+        dims: [ 3 ]
+    }
+]
+
+instance_group [
+    {
+      count: 2
+      kind: KIND_CPU
+    }
+  ]
+
+
+dynamic_batching: {max_queue_delay_microseconds: 100}

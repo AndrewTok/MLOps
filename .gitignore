@@ -167,3 +167,4 @@ cython_debug/
 .idea/
 *logs/mlflow_runs
 *.onnx
+usefull_commands.txt
