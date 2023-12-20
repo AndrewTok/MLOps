@@ -4,7 +4,6 @@ import git
 import numpy as np
 import pytorch_lightning as pl
 import torch
-from dvc import api as DVC
 
 # from mlflow.server import get_app_client
 from sklearn.metrics import accuracy_score
@@ -96,27 +95,7 @@ class IrisModule(pl.LightningModule):
         )
 
 
-def load_data(
-    url: str = 'https://github.com/AndrewTok/ml-ops',  # './'
-):
-    # 'https://github.com/AndrewTok/ml-ops'
-    fs = DVC.DVCFileSystem(
-        url,
-        rev='main',
-    )
-
-    tracked_lst = fs.find("/", detail=False, dvc_only=True)
-    for tracked in tracked_lst:
-        path = tracked[1:]
-        if os.path.exists(path):
-            continue
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        fs.get_file(path, path)
-
-
 def train():
-    load_data()
-
     cfg = load_cfg()
 
     data = IrisData.load_from_file('data/dataset.npz')

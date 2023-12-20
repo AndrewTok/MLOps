@@ -1,7 +1,10 @@
+import os
+
 import mlflow.onnx
 import onnx
 import onnxruntime as ort
 import torch
+from dvc import api as DVC
 from mlflow.models import infer_signature
 
 from .config import Params, load_cfg
@@ -24,6 +27,24 @@ def start_mlflow_server():
     )
 
     pass
+
+
+def load_data(
+    url: str = 'https://github.com/AndrewTok/ml-ops',  # './'
+):
+    # 'https://github.com/AndrewTok/ml-ops'
+    fs = DVC.DVCFileSystem(
+        url,
+        rev='main',
+    )
+
+    tracked_lst = fs.find("/", detail=False, dvc_only=True)
+    for tracked in tracked_lst:
+        path = tracked[1:]
+        if os.path.exists(path):
+            continue
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        fs.get_file(path, path)
 
 
 def export_to_onnx(model: SimpleNet, cfg: Params):

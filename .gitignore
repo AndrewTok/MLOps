@@ -168,3 +168,4 @@ cython_debug/
 *logs/mlflow_runs
 *.onnx
 usefull_commands.txt
+triton/model_repository
