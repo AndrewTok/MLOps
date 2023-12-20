@@ -14,5 +14,7 @@ python .\commands.py run_server - serving onnx модели
 
 python .\commands.py run_mlflow_tracking_server - запуск локального mlflow tracking сервера
 
+python .\commands.py run_triton_test - запуск и тестирование triton инференса
+
 
 Настраивать параметры обучения и инференса можно через конфиг configs/config.yaml
