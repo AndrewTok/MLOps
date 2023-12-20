@@ -1,0 +1,5 @@
+outs:
+- md5: 7b0b4f65f0e937782add2ac2d5887d7f
+  size: 14086
+  hash: md5
+  path: SimpleNet.onnx

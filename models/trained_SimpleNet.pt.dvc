@@ -1,0 +1,5 @@
+outs:
+- md5: d459b3425971b2fc10cf178f02261690
+  size: 17454
+  hash: md5
+  path: trained_SimpleNet.pt
