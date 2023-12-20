@@ -1,10 +1,11 @@
-import os
-
+import git
 import mlflow.onnx
 import onnx
 import onnxruntime as ort
 import torch
-from dvc import api as DVC
+from dvc.exceptions import DvcException
+from dvc.repo import Repo
+from dvc.scm import NoSCM
 from mlflow.models import infer_signature
 
 from .config import Params, load_cfg
@@ -22,29 +23,37 @@ def start_mlflow_server():
     mlflow.cli.server(
         [
             '--backend-store-uri',
-            '.\\logs\\mlflow_runs\\',
+            cfg.artifacts.log_uri,  #
         ]
     )
 
     pass
 
 
+def is_git_repo(path):
+    try:
+        _ = git.Repo(path).git_dir
+        return True
+    except git.exc.InvalidGitRepositoryError:
+        return False
+
+
 def load_data(
     url: str = 'https://github.com/AndrewTok/ml-ops',  # './'
 ):
     # 'https://github.com/AndrewTok/ml-ops'
-    fs = DVC.DVCFileSystem(
-        url,
-        rev='main',
-    )
+    cfg = load_cfg()
+    if not cfg.data.dvc_pull:
+        return
 
-    tracked_lst = fs.find("/", detail=False, dvc_only=True)
-    for tracked in tracked_lst:
-        path = tracked[1:]
-        if os.path.exists(path):
-            continue
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        fs.get_file(path, path)
+    try:
+        if is_git_repo('.'):
+            repo = Repo('.')
+        else:
+            repo = Repo(url=url, scm=NoSCM('.'))
+        repo.pull()
+    except DvcException:
+        print("Unable to load data, use dvc pull manually")
 
 
 def export_to_onnx(model: SimpleNet, cfg: Params):

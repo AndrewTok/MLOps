@@ -30,6 +30,8 @@ def infer_onnx(cfg: Params):
     cfg = make_params(cfg)
 
     # mlflow.set_experiment_tag("TestKey", "testValue")
+
+    # mlflow.end_run()
     mlflow.set_tracking_uri(cfg.artifacts.log_uri)
     mlflow.set_experiment(experiment_name=cfg.artifacts.experiment_name)
 
@@ -43,7 +45,7 @@ def infer_onnx(cfg: Params):
         pred_probas = onnx_pyfunc.predict(data.test_X.astype('float32'))[
             cfg.onnx.pred_name
         ]
-        print(pred_probas[:5])
+        # print(pred_probas[:5])
         true = data.test_y
 
         accuracy, pred = get_test_info(pred_probas, true)

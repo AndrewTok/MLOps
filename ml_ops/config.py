@@ -1,6 +1,7 @@
 import os
 from dataclasses import dataclass
 
+import hydra.core.global_hydra
 from hydra import compose, initialize
 from hydra.core.config_store import ConfigStore
 from omegaconf import DictConfig, OmegaConf
@@ -8,6 +9,7 @@ from omegaconf import DictConfig, OmegaConf
 
 @dataclass
 class Data:
+    dvc_pull: bool
     name: str
     path: str
 
@@ -92,7 +94,8 @@ cs.store(name="params", node=Params)
 
 
 def check_cfg():
-    initialize(version_base="1.3", config_path="../configs")
+    if not hydra.core.global_hydra.GlobalHydra.is_initialized():
+        initialize(version_base="1.3", config_path="../configs")
 
     cfg: Params = compose("config.yaml")
 
@@ -101,7 +104,8 @@ def check_cfg():
 
 
 def load_cfg() -> Params:
-    initialize(version_base="1.3", config_path="../configs")
+    if not hydra.core.global_hydra.GlobalHydra.instance().is_initialized():
+        initialize(version_base="1.3", config_path="../configs")
 
     cfg: Params = compose("config.yaml")
 

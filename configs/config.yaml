@@ -1,4 +1,5 @@
 data:
+    dvc_pull: True # pull data from dvc in code
     name: name
     path: "data/dataset.npz"
 
